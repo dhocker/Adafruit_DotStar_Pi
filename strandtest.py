@@ -121,7 +121,8 @@ def main():
     # The default here is SPI at 800 KHz
     # strip   = Adafruit_DotStar(numpixels)           # Use SPI (pins 10=MOSI, 11=SCLK by default)
     # This strip uses the specified pins at 800 KHz
-    strip   = Adafruit_DotStar(numpixels, datapin, clockpin, order='gbr') # Use SPI (pins 10=MOSI, 11=SCLK)
+    #strip   = Adafruit_DotStar(numpixels, datapin, clockpin, order='gbr') # Use SPI (pins 10=MOSI, 11=SCLK)
+    strip   = Adafruit_DotStar(numpixels, order='gbr') # Use SPI (pins 10=MOSI, 11=SCLK)
     # strip   = Adafruit_DotStar(numpixels, 32000000) # SPI @ ~32 MHz
     # strip   = Adafruit_DotStar()                    # SPI, No pixel buffer
     # strip   = Adafruit_DotStar(32000000)            # 32 MHz SPI, no pixel buf
