@@ -54,7 +54,7 @@
   License along with NeoPixel.  If not, see <http://www.gnu.org/licenses/>.
   ------------------------------------------------------------------------*/
 
-#include <python2.7/Python.h>
+#include <python3.6m/Python.h>
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
@@ -226,7 +226,7 @@ static PyObject *DotStar_new(
 	// "order='rgb'" or similar (switch r/g/b around to match strip).
 	// Order string isn't much validated; nonsense may occur.
 	if(kw && (string = PyDict_GetItemString(kw, "order")) &&
-	  (order = PyString_AsString(string))) {
+	  (order = PyBytes_AsString(string))) {
 		for(i=0; order[i]; i++) order[i] = tolower(order[i]);
 		if((c = strchr(order, 'r'))) rOffset = c - order + 1;
 		if((c = strchr(order, 'g'))) gOffset = c - order + 1;
@@ -654,7 +654,7 @@ static void DotStar_dealloc(DotStarObject *self) {
 	_close(self);
 	if(self->pBuf)   free(self->pBuf);
 	if(self->pixels) free(self->pixels);
-	self->ob_type->tp_free((PyObject *)self);
+	Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 // Method names are silly and inconsistent, but following NeoPixel
@@ -675,8 +675,8 @@ static PyMethodDef methods[] = {
 };
 
 static PyTypeObject DotStarObjectType = {
-	PyObject_HEAD_INIT(NULL)
-	0,                           // ob_size (not used, always set to 0)
+        PyVarObject_HEAD_INIT(NULL, 0)
+	//0,                           // ob_size (not used, always set to 0)
 	"dotstar.Adafruit_DotStar",  // tp_name (module name, object name)
 	sizeof(DotStarObject),       // tp_basicsize
 	0,                           // tp_itemsize
@@ -717,13 +717,27 @@ static PyTypeObject DotStarObjectType = {
 	0,                           // tp_free
 };
 
-PyMODINIT_FUNC initdotstar(void) { // Module initialization function
+PyMODINIT_FUNC PyInit_dotstar(void) { // Module initialization function
 	PyObject* m;
 
-	if((m = Py_InitModule("dotstar", methods)) &&
+	static struct PyModuleDef moduledef = {
+	  PyModuleDef_HEAD_INIT,
+	  "dotstar",     /* m_name */
+	  "DotStar",     /* m_doc */
+	  -1,            /* m_size */
+	  methods,       /* m_methods */
+	  NULL,          /* m_reload */
+	  NULL,          /* m_traverse */
+	  NULL,          /* m_clear */
+	  NULL,          /* m_free */
+	};
+
+	if((m = PyModule_Create(&moduledef)) &&
 	   (PyType_Ready(&DotStarObjectType) >= 0)) {
 		Py_INCREF(&DotStarObjectType);
 		PyModule_AddObject(m, "Adafruit_DotStar",
 		  (PyObject *)&DotStarObjectType);
+		return m;
 	}
+	return NULL;
 }

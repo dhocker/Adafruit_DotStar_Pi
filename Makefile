@@ -5,6 +5,7 @@ all: dotstar.so
 
 CFLAGS=-Ofast -fomit-frame-pointer \
  -I/opt/vc/include \
+ -I/usr/local/include \
  -L/opt/vc/lib
 
 dotstar.so: dotstar.o
