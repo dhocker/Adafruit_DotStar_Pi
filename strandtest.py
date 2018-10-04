@@ -80,7 +80,7 @@ def scroll_pixels(strip, iterations):
         except KeyboardInterrupt:
             break
 
-    print "Turning off all lights..."
+    print("Turning off all lights...")
     # Not well documented, but this is how you turn
     # off everything
     strip.clear()
@@ -100,7 +100,7 @@ def random_pixels(strip):
     active_size = int(strip.numPixels() / 2)
     color = Color(255, 0, 0)
 
-    print "{0} random pixels for 10 sec...".format(strip.numPixels())
+    print("{0} random pixels for 10 sec...".format(strip.numPixels()))
     for i in range(int(10.0 / delay_time)):
         if len(pixels) >= active_size:
             p = pixels.pop()
@@ -115,14 +115,14 @@ def random_pixels(strip):
 def main():
     
     # Alternate ways of declaring strip:
-    print "Data pin GPIO/BCM {0}".format(datapin)
-    print "Clock pin GPIO/BCM {0}".format(clockpin)
-    print "Opening LED strip with {0} pixels".format(numpixels)
+    print("Data pin GPIO/BCM {0}".format(datapin))
+    print("Clock pin GPIO/BCM {0}".format(clockpin))
+    print("Opening LED strip with {0} pixels".format(numpixels))
     # The default here is SPI at 800 KHz
     # strip   = Adafruit_DotStar(numpixels)           # Use SPI (pins 10=MOSI, 11=SCLK by default)
     # This strip uses the specified pins at 800 KHz
     #strip   = Adafruit_DotStar(numpixels, datapin, clockpin, order='gbr') # Use SPI (pins 10=MOSI, 11=SCLK)
-    strip   = Adafruit_DotStar(numpixels, order='gbr') # Use SPI (pins 10=MOSI, 11=SCLK)
+    strip   = Adafruit_DotStar(numpixels, order='gbr'.encode('utf-8')) # Use SPI (pins 10=MOSI, 11=SCLK)
     # strip   = Adafruit_DotStar(numpixels, 32000000) # SPI @ ~32 MHz
     # strip   = Adafruit_DotStar()                    # SPI, No pixel buffer
     # strip   = Adafruit_DotStar(32000000)            # 32 MHz SPI, no pixel buf
@@ -135,7 +135,7 @@ def main():
     # Runs 10 LEDs at a time along strip, cycling through red, green and blue.
     # This requires about 200 mA for all the 'on' pixels + 1 mA per 'off' pixel.
     
-    print "Hit Ctrl-C to end test"
+    print("Hit Ctrl-C to end test")
     
     try:
         while True:
@@ -143,16 +143,16 @@ def main():
             run_all_effects(strip)
             scroll_pixels(strip, numpixels * 20)
     except (KeyboardInterrupt, Exception) as ex:
-        print ex
-        print ""
-        print "Turning off all lights..."
+        print(ex)
+        print("")
+        print("Turning off all lights...")
         # Not well documented, but this is how you turn
         # off everything
         strip.clear()
         strip.show()
 
         strip.close()
-        print "Strip closed"
+        print("Strip closed")
     
     
 if __name__ == "__main__":

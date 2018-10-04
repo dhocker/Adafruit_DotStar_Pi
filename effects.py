@@ -20,12 +20,12 @@ def Color(red, green, blue, white = 0):
     NOTE: Requires order='bgr' to be set. This IS NOT the default order
     which is order='brg'
     """
-    return (white << 24) | (red << 16)| (green << 8) | blue
+    return int((white * pow(2, 24)) + (red * pow(2, 16)) + (green * pow(2, 8)) + blue)
 
 # Define functions which animate LEDs in various ways.
 def colorWipe(strip, color, wait_ms=50):
     """Wipe color across display a pixel at a time."""
-    print "colorWipe"
+    print("colorWipe")
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
         strip.show()
@@ -33,7 +33,7 @@ def colorWipe(strip, color, wait_ms=50):
 
 def theaterChase(strip, color, wait_ms=50, iterations=10):
     """Movie theater light style chaser animation."""
-    print "theaterChase"
+    print("theaterChase")
     for j in range(iterations):
         for q in range(3):
             for i in range(0, strip.numPixels(), 3):
@@ -56,25 +56,25 @@ def wheel(pos):
 
 def rainbow(strip, wait_ms=20, iterations=1):
     """Draw rainbow that fades across all pixels at once."""
-    print "rainbow"
+    print("rainbow")
     for j in range(256*iterations):
         for i in range(strip.numPixels()):
-            strip.setPixelColor(i, wheel((i+j) & 255))
+            strip.setPixelColor(i, wheel((i+j) % 256))
         strip.show()
         time.sleep(wait_ms/1000.0)
 
 def rainbowCycle(strip, wait_ms=20, iterations=5):
     """Draw rainbow that uniformly distributes itself across all pixels."""
-    print "rainbowCycle"
+    print("rainbowCycle")
     for j in range(256*iterations):
         for i in range(strip.numPixels()):
-            strip.setPixelColor(i, wheel(((i * 256 / strip.numPixels()) + j) & 255))
+            strip.setPixelColor(i, wheel(((i * 256 / strip.numPixels()) + j) % 256))
         strip.show()
         time.sleep(wait_ms/1000.0)
 
 def theaterChaseRainbow(strip, wait_ms=50):
     """Rainbow movie theater light style chaser animation."""
-    print "theaterChaseRainbow"
+    print("theaterChaseRainbow")
     for j in range(256):
         for q in range(3):
             for i in range(0, strip.numPixels(), 3):
@@ -90,7 +90,7 @@ def run_all_effects(strip):
     # Create NeoPixel object with appropriate configuration.
     
     try:
-        print "Effects cycle begins..."
+        print("Effects cycle begins...")
         # Color wipe animations.
         colorWipe(strip, Color(255, 0, 0))  # Red wipe
         colorWipe(strip, Color(0, 255, 0))  # Blue wipe
@@ -104,12 +104,12 @@ def run_all_effects(strip):
         rainbowCycle(strip)
         theaterChaseRainbow(strip)
         
-        print "Effects cycle ends"
+        print("Effects cycle ends")
     except KeyboardInterrupt as ex:
-        print ""
-        print "Cycle terminated"
+        print("")
+        print("Cycle terminated")
         raise ex
     except Exception as ex:
-        print ""
-        print ex
+        print("")
+        print(ex)
         raise ex

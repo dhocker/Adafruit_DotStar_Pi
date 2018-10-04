@@ -77,11 +77,11 @@ def wheel(pos, gamma=False):
         return Color(0, pos * 3, 255 - pos * 3, gamma=gamma)
 
 def wheel_fill(strip, iterations=1):
-    print "Wheel with gamma correction"
+    print("Wheel with gamma correction")
     for i in range(iterations):
         for pos in range(256):
             c = wheel(pos, gamma=True)
-            print pos, rgb(c)
+            print(pos, rgb(c))
             for pxl in range(numpixels):
                 strip.setPixelColor(pxl, c)
             strip.show()
@@ -117,7 +117,7 @@ def scroll_pixels(strip, test_color, iterations):
         if(tail >= numpixels): 
             tail = 0  # Off end? Reset
     
-    print "Turning off all lights..."
+    print("Turning off all lights...")
     # Not well documented, but this is how you turn
     # off everything
     strip.clear()
@@ -137,7 +137,7 @@ def random_pixels(strip):
     active_size = int(strip.numPixels() / 2)
     color = Color(255, 0, 0)
 
-    print "{0} random pixels for 10 sec...".format(strip.numPixels())
+    print("{0} random pixels for 10 sec...".format(strip.numPixels()))
     for i in range(int(10.0 / delay_time)):
         if len(pixels) >= active_size:
             p = pixels.pop()
@@ -155,20 +155,20 @@ def main():
     # Only use hardware SPI
     # print "Data pin GPIO/BCM {0}".format(datapin)
     # print "Clock pin GPIO/BCM {0}".format(clockpin)
-    print "Opening LED strip with {0} pixels".format(numpixels)
+    print("Opening LED strip with {0} pixels".format(numpixels))
     # NOTE: This is not the same as omitting data/clock pin args!!!
     # strip = Adafruit_DotStar(numpixels, datapin, clockpin, order='gbr') # Use SPI (pins 10=MOSI, 11=SCLK)
     # strip = Adafruit_DotStar(numpixels, datapin, clockpin, order='grb') # Use SPI (pins 10=MOSI, 11=SCLK)
     # strip = Adafruit_DotStar(numpixels) # Use SPI (pins 10=MOSI, 11=SCLK)
     # strip = Adafruit_DotStar(numpixels, order='gbr') # Use SPI (pins 10=MOSI, 11=SCLK)
     # NOTE: The default color order is BRG (not RGB)
-    strip = Adafruit_DotStar(numpixels, order='rgb') # Use SPI (pins 10=MOSI, 11=SCLK)
+    strip = Adafruit_DotStar(numpixels, order='rgb'.encode('utf-8')) # Use SPI (pins 10=MOSI, 11=SCLK)
     strip.begin()           # Initialize pins for output
 
     strip.setBrightness(brightness) # Limit brightness
     #strip.setBrightness(127) # Unlimited brightness
     
-    print "Hit Ctrl-C to end test"
+    print("Hit Ctrl-C to end test")
     
     try:
         while True:
@@ -182,18 +182,18 @@ def main():
             #solid_fill(strip, Color(0, 255, 0, gamma=True), iterations=2)
             #solid_fill(strip, Color(0, 0, 255, gamma=True), iterations=2)
             wheel_fill(strip, iterations=1)
-            print "Pass complete"
+            print("Pass complete")
     except (KeyboardInterrupt, Exception) as ex:
-        print ex
-        print ""
-        print "Turning off all lights..."
+        print(ex)
+        print("")
+        print("Turning off all lights...")
         # Not well documented, but this is how you turn
         # off everything
         strip.clear()
         strip.show()
 
         strip.close()
-        print "Strip closed"
+        print("Strip closed")
     
     
 if __name__ == "__main__":
