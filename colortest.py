@@ -41,22 +41,58 @@ datapin = 10    # GPIO/BCM 10 SPI_MOSI
 clockpin = 11   # GPIO/BCM 11 SPI_SCLK
 
 def Color(r, g, b, gamma=False):
-    # Based on empiracle observation when the order is rgb
-    # when order='rgb' 
+    # Based on empiracle observation that the order is bgr = bbggrr
     if gamma:
-        return (gamma8[b] << 16) | (gamma8[g] << 8) | gamma8[r]        
-    return (b << 16) | (g << 8) | r
+        return ((gamma8[b] << 16) | (gamma8[g] << 8) | gamma8[r]) & 0xFFFFFF
+    return ((b << 16) | (g << 8) | r) & 0xFFFFFF
 
 def rgb_color(r, g, b):
-    # Based on empiracle observation when the order is rgb
-    # when order='rgb' 
-    return (b << 16) | (g << 8) | r
+    # Based on empiracle observation that the order is bgr = bbggrr
+    return ((b << 16) | (g << 8) | r) & 0xFFFFFF
 
 def gamma_color(r, g, b):
     # Gamma adjusted color values
-    # Based on empiracle observation when the order is rgb
-    # when order='rgb' 
-    return (gamma8[b] << 16) | (gamma8[g] << 8) | gamma8[r]
+    # Based on empiracle observation that the order is bgr = bbggrr
+    return ((gamma8[b] << 16) | (gamma8[g] << 8) | gamma8[r]) & 0xFFFFFF
+
+def rgb(c):
+    """
+    Returns [r, g, b] assuming c is in order bgr as required by DotStar
+    """
+    return [c & 0xFF, c >> 8 & 0xFF, c >> 16 & 0xFF]
+
+def wheel(pos, gamma=False):
+    """
+    Generate rainbow colors across 0-255 positions.
+    This is mostly an algorithm that generates a continuous color
+    change over the range 0-255.
+    """
+    if pos < 85:
+        return Color(pos * 3, 255 - pos * 3, 0, gamma=gamma)
+    elif pos < 170:
+        pos -= 85
+        return Color(255 - pos * 3, 0, pos * 3, gamma=gamma)
+    else:
+        pos -= 170
+        return Color(0, pos * 3, 255 - pos * 3, gamma=gamma)
+
+def wheel_fill(strip, iterations=1):
+    print "Wheel with gamma correction"
+    for i in range(iterations):
+        for pos in range(256):
+            c = wheel(pos, gamma=True)
+            print pos, rgb(c)
+            for pxl in range(numpixels):
+                strip.setPixelColor(pxl, c)
+            strip.show()
+            time.sleep(0.5)
+
+def solid_fill(strip, c, iterations=1):
+    for i in range(iterations):
+        for pxl in range(numpixels):
+            strip.setPixelColor(pxl, c)
+        strip.show()
+        time.sleep(1.0)
 
 def scroll_pixels(strip, test_color, iterations):
     # Runs 10 LEDs at a time along strip
@@ -129,8 +165,8 @@ def main():
     strip = Adafruit_DotStar(numpixels, order='rgb') # Use SPI (pins 10=MOSI, 11=SCLK)
     strip.begin()           # Initialize pins for output
 
-    # strip.setBrightness(brightness) # Limit brightness
-    strip.setBrightness(127) # Unlimited brightness
+    strip.setBrightness(brightness) # Limit brightness
+    #strip.setBrightness(127) # Unlimited brightness
     
     print "Hit Ctrl-C to end test"
     
@@ -138,11 +174,15 @@ def main():
         while True:
             # scroll_pixels(strip, Color(255, 83, 13), numpixels * 20)
             # This one pretty much produces the expected results (gamma applied)
-            scroll_pixels(strip, Color(255, 83, 13, gamma=True), numpixels * 20)
-            scroll_pixels(strip, rgb_color(255, 0, 0), numpixels * 20)
-            scroll_pixels(strip, rgb_color(0, 255, 0), numpixels * 20)
-            scroll_pixels(strip, rgb_color(0, 0, 255), numpixels * 20)
-            # scroll_pixels(strip, Color(0, 0, 255), numpixels * 20)
+            #scroll_pixels(strip, Color(255, 83, 13, gamma=True), numpixels * 20)
+            #scroll_pixels(strip, rgb_color(255, 0, 0), numpixels * 20)
+            #scroll_pixels(strip, rgb_color(0, 255, 0), numpixels * 20)
+            #scroll_pixels(strip, rgb_color(0, 0, 255), numpixels * 20)
+            #solid_fill(strip, Color(255, 0, 0, gamma=True), iterations=2)
+            #solid_fill(strip, Color(0, 255, 0, gamma=True), iterations=2)
+            #solid_fill(strip, Color(0, 0, 255, gamma=True), iterations=2)
+            wheel_fill(strip, iterations=1)
+            print "Pass complete"
     except (KeyboardInterrupt, Exception) as ex:
         print ex
         print ""
