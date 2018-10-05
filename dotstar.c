@@ -54,7 +54,7 @@
   License along with NeoPixel.  If not, see <http://www.gnu.org/licenses/>.
   ------------------------------------------------------------------------*/
 
-# __PYTHON_H__ is defined on the command line (see Makefile)
+// __PYTHON_H__ is defined on the command line (see Makefile)
 #include __PYTHON_H__
 #include <fcntl.h>
 #include <sys/mman.h>
