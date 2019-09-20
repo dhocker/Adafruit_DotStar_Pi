@@ -56,7 +56,7 @@
 
 // __PYTHON_H__ is defined on the command line (see Makefile)
 #ifndef __PYTHON_H__
-  #define __PYTHON_H__ <python3.5/Python.h>
+  #define __PYTHON_H__ <python3.7/Python.h>
 #endif
 #include __PYTHON_H__
 #include <fcntl.h>

@@ -6,9 +6,10 @@
 # make - Uses the default Python version which is currently 3.6
 # make python3.5 - Uses the Python 3.5 version headers
 # make python3.6 - Uses the Pyton 3.6 version headers
+# make python3.7 - Uses the Pyton 3.7 version headers
 # make clean - Removes all build output
  
-DEFINES=-D__PYTHON_H__="<python3.6m/Python.h>"
+DEFINES=-D__PYTHON_H__="<python3.7/Python.h>"
 
 all: dotstar.so
 
@@ -17,6 +18,9 @@ python3.5: all
 
 python3.6: DEFINES=-D__PYTHON_H__="<python3.6m/Python.h>"
 python3.6: all
+
+python3.7: DEFINES=-D__PYTHON_H__="<python3.7/Python.h>"
+python3.7: all
 
 CFLAGS=-Ofast -fomit-frame-pointer \
 	-I/opt/vc/include \
